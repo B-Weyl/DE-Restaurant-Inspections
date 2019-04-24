@@ -4,6 +4,7 @@ import folium
 import json
 from folium.plugins import FastMarkerCluster
 from folium.plugins import MarkerCluster
+from collections import defaultdict
 
 # TODO:
 # include violations in the tooltip
@@ -77,23 +78,38 @@ from folium.plugins import MarkerCluster
 
 # plotting the points on the map
 
-m = folium.Map(location=(39.7447, -75.5484), prefer_canvas=True)
-tooltip = 'Click me!'
-mc = MarkerCluster()
+# m = folium.Map(location=(39.7447, -75.5484), prefer_canvas=True)
+# tooltip = 'Click me!'
+# mc = MarkerCluster()
 
-with open('coords.txt', 'r') as plot_file:
-    for coords in plot_file:
-        coords = coords.split(' ')
-        lat, lng = coords[0], coords[1]
-        place = ' '.join(coords[2:])
-        lat = float(lat[:-1])
-        lng = float(lng)
+# with open('coords.txt', 'r') as plot_file:
+#     for coords in plot_file:
+#         coords = coords.split(' ')
+#         lat, lng = coords[0], coords[1]
+#         place = ' '.join(coords[2:])
+#         lat = float(lat[:-1])
+#         lng = float(lng)
 
-        popup = folium.Popup(place + '\n', parse_html=True)
+#         popup = folium.Popup(place + '\n', parse_html=True)
 
-        mc.add_child(
-            folium.Marker(location=[lat, lng], tooltip=tooltip, popup=popup))
+#         mc.add_child(
+#             folium.Marker(location=[lat, lng], tooltip=tooltip, popup=popup))
 
-m.add_child(mc)
+# m.add_child(mc)
 
-m.save('points.html')
+# m.save('points.html')
+
+
+# create a file that has the violations on it as well
+
+place_violation = defaultdict(list)
+with open('inspections.txt', 'r') as inspection_file:
+    for line in inspection_file:
+        line = line.split(", '")
+        # print(line)
+        place = line[0][1:].replace("'", '')
+        violations = line[-1].strip().replace(']', '').replace('[', '').replace("'", '')
+        place_violation[place].append(violations)
+print(place_violation['WAWA #856'])
+
+
